@@ -16,7 +16,7 @@ if (!existsSync(CONFIG_DIR)) {
 const DEFAULT_CONFIG: Record<string, string> = {
   model: "gpt-5-mini",
   shortcut: "CommandOrControl+Shift+T",
-  theme: "dark",
+  theme: "system",
   language: "system",
 };
 

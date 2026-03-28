@@ -141,7 +141,7 @@ app.whenReady().then(async () => {
       return {
         model: "gpt-5-mini",
         shortcut: "CommandOrControl+Shift+T",
-        theme: "dark",
+        theme: "system",
         language: "system",
       };
     }
@@ -233,14 +233,14 @@ app.whenReady().then(async () => {
       ? {
         quit: "ออก",
         cancel: "ยกเลิก",
-        title: "ออกจาก Copilot Bar",
-        message: "คุณแน่ใจหรือไม่ว่าต้องการออกจาก Copilot Bar?",
+        title: "ออกจาก Copilot Control Center",
+        message: "คุณแน่ใจหรือไม่ว่าต้องการออกจาก Copilot Control Center?",
       }
       : {
         quit: "Quit",
         cancel: "Cancel",
-        title: "Quit Copilot Bar",
-        message: "Are you sure you want to quit Copilot Bar?",
+        title: "Quit Copilot Control Center",
+        message: "Are you sure you want to quit Copilot Control Center?",
       };
     const { response } = await dialog.showMessageBox({
       type: "question",
@@ -262,8 +262,8 @@ app.whenReady().then(async () => {
       type: "question",
       buttons: ["Quit", "Cancel"],
       defaultId: 1,
-      title: "Quit Copilot Bar",
-      message: "Are you sure you want to quit Copilot Bar?",
+      title: "Quit Copilot Control Center",
+      message: "Are you sure you want to quit Copilot Control Center?",
     });
     if (response === 0) {
       quitConfirmed = true;
@@ -345,7 +345,7 @@ app.whenReady().then(async () => {
   };
 
   mb.on("ready", () => {
-    console.log("Copilot Bar is ready");
+    console.log("Copilot Control Center is ready");
 
     // Register global shortcut from config
     const config = loadConfig();
