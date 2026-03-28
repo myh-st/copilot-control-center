@@ -1,8 +1,8 @@
-# Copilot Bar
+# Copilot Control Center
 
-Copilot Bar is a macOS menu bar assistant powered by the GitHub Copilot SDK. It keeps chat, tools, widgets, and Mac controls one click away without leaving the menu bar.
+Copilot Control Center is a macOS menu bar assistant powered by the GitHub Copilot SDK. It keeps chat, tools, widgets, and Mac controls one click away without leaving the menu bar.
 
-![Copilot Bar main interface](screenshots/product-image.png)
+![Copilot Control Center main interface](screenshots/product-image.png)
 
 ## What it can do
 
@@ -12,6 +12,7 @@ Copilot Bar is a macOS menu bar assistant powered by the GitHub Copilot SDK. It 
 - Quick actions for **Plan**, **Review**, **Summarize**, and **Translate**
 - Markdown responses with syntax highlighting
 - Optional desktop window mode when you want a larger workspace
+- Theme follows the system appearance by default, with manual light/dark override
 
 ### Attachments and analysis
 - Capture screenshots from the toolbar
@@ -42,10 +43,10 @@ Copilot Bar is a macOS menu bar assistant powered by the GitHub Copilot SDK. It 
 ## Current UI
 
 ### Document analysis workflow
-![Copilot Bar document analysis](screenshots/file-analysis-example.png)
+![Copilot Control Center document analysis](screenshots/file-analysis-example.png)
 
 ### Interactive timer widgets
-![Copilot Bar timer widget](screenshots/timer-example.png)
+![Copilot Control Center timer widget](screenshots/timer-example.png)
 
 ## Requirements
 
@@ -78,7 +79,7 @@ Some features need macOS permissions in **System Settings > Privacy & Security**
 - App state is stored in `~/.copilot-bar/copilot-bar.db`
 - Current settings include:
   - AI model
-  - Theme
+  - Theme (**system**, **light**, **dark**)
   - Language (**system**, **English**, **Thai**)
   - Global shortcut
 - Local screenshots are saved to `~/Pictures/Copilot-Bar-Screenshots` and copied to the clipboard when S3 upload is not configured

@@ -2,29 +2,28 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Copilot Bar</title>
+    <title>Copilot Control Center</title>
     <style>
       :root {
-        /* Dark theme (default) */
-        --bg-primary: #1a1a1a;
-        --bg-secondary: #252525;
-        --bg-tertiary: #2a2a2a;
-        --bg-input: #252525;
-        --border-color: #333;
-        --text-primary: #e0e0e0;
-        --text-secondary: #888;
-        --text-muted: #666;
+        --bg-primary: #000000;
+        --bg-secondary: #111111;
+        --bg-tertiary: #1a1a1a;
+        --bg-input: #111111;
+        --border-color: #2a2a2a;
+        --text-primary: #f5f5f7;
+        --text-secondary: #a1a1aa;
+        --text-muted: #71717a;
         --accent-color: #0066ff;
         --accent-hover: #0052cc;
         --user-message-bg: #0066ff;
         --user-message-text: white;
-        --assistant-message-bg: #2a2a2a;
-        --code-bg: #1a1a1a;
-        --error-bg: #4a1c1c;
-        --error-text: #ff6b6b;
-        --tool-bg: #2a2a1a;
+        --assistant-message-bg: #171717;
+        --code-bg: #090909;
+        --error-bg: #3f1717;
+        --error-text: #ff8d8d;
+        --tool-bg: #231f12;
         --tool-text: #f0a020;
-        --tool-complete-bg: #1a2a1a;
+        --tool-complete-bg: #162416;
         --tool-complete-text: #40a040;
       }
 
@@ -1452,7 +1451,7 @@
                 d="M512.002 246.393v57.384c-.02 7.411-3.696 14.638-9.67 19.011C431.767 374.444 344.695 416 256 416c-98.138 0-196.379-56.542-246.33-93.21-5.975-4.374-9.65-11.6-9.671-19.012v-57.384a35.347 35.347 0 016.857-20.922l15.583-21.085c8.336-11.312 20.757-14.31 33.98-14.31 4.988-56.953 16.794-97.604 45.024-127.354C155.194 5.77 226.56 0 256 0c29.441 0 100.807 5.77 154.557 62.722 28.19 29.75 40.036 70.401 45.025 127.354 13.263 0 25.602 2.936 33.958 14.31l15.583 21.127c4.476 6.077 6.878 13.345 6.878 20.88zm-97.666-26.075c-.677-13.058-11.292-18.19-22.338-21.824-11.64 7.309-25.848 10.183-39.46 10.183-14.454 0-41.432-3.47-63.872-25.869-5.667-5.625-9.527-14.454-12.155-24.247a212.902 212.902 0 00-20.469-1.088c-6.098 0-13.099.349-20.551 1.088-2.628 9.793-6.509 18.622-12.155 24.247-22.4 22.4-49.418 25.87-63.872 25.87-13.612 0-27.86-2.855-39.501-10.184-11.005 3.613-21.558 8.828-22.277 21.824-1.17 24.555-1.272 49.11-1.375 73.645-.041 12.318-.082 24.658-.288 36.976.062 7.166 4.374 13.818 10.882 16.774 52.97 24.124 103.045 36.278 149.137 36.278 46.01 0 96.085-12.154 149.014-36.278 6.508-2.956 10.84-9.608 10.881-16.774.637-36.832.124-73.809-1.642-110.62h.041z"
               />
             </svg>
-            <span id="appTitleText">Copilot Bar</span>
+            <span id="appTitleText">Copilot Control Center</span>
           </h1>
         </div>
         <div class="header-actions">
@@ -1620,8 +1619,8 @@
 
       const translations = {
         en: {
-          appTitle: "Copilot Bar",
-          windowTitle: "Copilot Window",
+          appTitle: "Copilot Control Center",
+          windowTitle: "Copilot Control Center",
           sessions: "Sessions",
           sessionsWithTitle: "Sessions · {title}",
           sessionsTitle: "Sessions: {title}",
@@ -1657,6 +1656,7 @@
           languageSystem: "System default",
           languageEnglish: "English",
           languageThai: "ไทย",
+          themeSystem: "System",
           light: "Light",
           dark: "Dark",
           globalShortcut: "Global Shortcut",
@@ -1699,7 +1699,7 @@
           slashCompactDescription: "Compact conversation (summarize & reset context)",
           helpMarkdown: `# /help
 
-Copilot Bar can **chat**, **run tools**, and **show widgets**.
+Copilot Control Center can **chat**, **run tools**, and **show widgets**.
 
 ## Slash Commands
 - \`/help\` — Show commands, features, and examples
@@ -1719,8 +1719,8 @@ Copilot Bar can **chat**, **run tools**, and **show widgets**.
 - Open settings to change the model, theme, language, and global shortcut.`,
         },
         th: {
-          appTitle: "Copilot Bar",
-          windowTitle: "Copilot Window",
+          appTitle: "Copilot Control Center",
+          windowTitle: "Copilot Control Center",
           sessions: "เซสชัน",
           sessionsWithTitle: "เซสชัน · {title}",
           sessionsTitle: "เซสชัน: {title}",
@@ -1756,6 +1756,7 @@ Copilot Bar can **chat**, **run tools**, and **show widgets**.
           languageSystem: "ตามระบบ",
           languageEnglish: "English",
           languageThai: "ไทย",
+          themeSystem: "ตามระบบ",
           light: "สว่าง",
           dark: "มืด",
           globalShortcut: "ปุ่มลัดหลัก",
@@ -1798,7 +1799,7 @@ Copilot Bar can **chat**, **run tools**, and **show widgets**.
           slashCompactDescription: "ย่อบทสนทนาเพื่อคืนพื้นที่บริบท",
           helpMarkdown: `# /help
 
-Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช้เครื่องมือ**, และ **แสดงวิดเจ็ต** ได้
+Copilot Control Center ใช้สำหรับ **แชท**, **เรียกใช้เครื่องมือ**, และ **แสดงวิดเจ็ต** ได้
 
 ## คำสั่งลัด
 - \`/help\` — แสดงคำสั่ง ความสามารถ และตัวอย่าง
@@ -1824,6 +1825,9 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
       let currentConfig = {};
       let currentLanguage = "en";
       let relativeTimeFormatter = new Intl.RelativeTimeFormat(currentLanguage, { numeric: "auto" });
+      const systemThemeMedia = typeof window.matchMedia === "function"
+        ? window.matchMedia("(prefers-color-scheme: dark)")
+        : null;
 
       function resolveLanguage(language) {
         if (typeof language === "string" && (language === "en" || language === "th")) return language;
@@ -1833,6 +1837,18 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
       function setLanguage(language) {
         currentLanguage = resolveLanguage(language);
         relativeTimeFormatter = new Intl.RelativeTimeFormat(currentLanguage, { numeric: "auto" });
+      }
+
+      function normalizeTheme(theme) {
+        return theme === "light" || theme === "dark" ? theme : "system";
+      }
+
+      function resolveTheme(theme) {
+        const normalizedTheme = normalizeTheme(theme);
+        if (normalizedTheme === "system") {
+          return systemThemeMedia?.matches ? "dark" : "light";
+        }
+        return normalizedTheme;
       }
 
       function t(key, vars = {}) {
@@ -1873,7 +1889,9 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
 
       function updateStaticText() {
         const desktopMode = new URLSearchParams(window.location.search).get("mode") === "desktop";
-        appTitleText.textContent = desktopMode ? t("windowTitle") : t("appTitle");
+        const title = desktopMode ? t("windowTitle") : t("appTitle");
+        appTitleText.textContent = title;
+        document.title = title;
         screenshotBtn.title = t("captureScreenshot");
         screenshotBtn.setAttribute("aria-label", t("captureScreenshot"));
         documentBtn.title = t("attachDocument");
@@ -1912,7 +1930,7 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
           setLanguage(currentConfig.language);
           modelBadge.textContent = currentConfig.model || t("loading");
           // Apply saved theme
-          applyTheme(currentConfig.theme || "dark");
+          applyTheme(currentConfig.theme || "system");
           updateHeaderButtons();
           updateStaticText();
         } catch (err) {
@@ -1924,7 +1942,21 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
 
       // Theme handling
       function applyTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.setAttribute("data-theme", resolveTheme(theme));
+      }
+
+      const syncSystemTheme = () => {
+        if (normalizeTheme(currentConfig.theme) === "system") {
+          applyTheme("system");
+        }
+      };
+
+      if (systemThemeMedia) {
+        if (typeof systemThemeMedia.addEventListener === "function") {
+          systemThemeMedia.addEventListener("change", syncSystemTheme);
+        } else if (typeof systemThemeMedia.addListener === "function") {
+          systemThemeMedia.addListener(syncSystemTheme);
+        }
       }
 
       // Load chat history on startup
@@ -2652,8 +2684,9 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
             <div class="settings-row">
               <label>${escapeHtml(t("theme"))}</label>
               <div class="theme-toggle">
-                <button class="theme-option ${currentConfig.theme === 'light' ? 'active' : ''}" data-theme="light">${escapeHtml(t("light"))}</button>
-                <button class="theme-option ${currentConfig.theme !== 'light' ? 'active' : ''}" data-theme="dark">${escapeHtml(t("dark"))}</button>
+                <button class="theme-option ${normalizeTheme(currentConfig.theme) === 'system' ? 'active' : ''}" data-theme="system">${escapeHtml(t("themeSystem"))}</button>
+                <button class="theme-option ${normalizeTheme(currentConfig.theme) === 'light' ? 'active' : ''}" data-theme="light">${escapeHtml(t("light"))}</button>
+                <button class="theme-option ${normalizeTheme(currentConfig.theme) === 'dark' ? 'active' : ''}" data-theme="dark">${escapeHtml(t("dark"))}</button>
               </div>
             </div>
             <div class="settings-row">
@@ -2715,7 +2748,7 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
 
         // Set current values
         let newShortcut = currentConfig.shortcut;
-        let newTheme = currentConfig.theme || "dark";
+        let newTheme = normalizeTheme(currentConfig.theme);
         let newLanguage = currentConfig.language || "system";
         languageSelect.value = newLanguage;
 
@@ -2757,7 +2790,7 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
         // Close handlers
         const close = () => {
           // Revert theme if cancelled
-          applyTheme(currentConfig.theme || "dark");
+          applyTheme(currentConfig.theme || "system");
           setLanguage(currentConfig.language);
           updateStaticText();
           overlay.remove();

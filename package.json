@@ -14,7 +14,7 @@
   },
   "build": {
     "appId": "com.github.copilotbar",
-    "productName": "Copilot Bar",
+    "productName": "Copilot Control Center",
     "directories": {
       "output": "release"
     },

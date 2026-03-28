@@ -49,7 +49,7 @@ describe("config", () => {
     const config = loadConfig();
     expect(config.model).toBe("gpt-5-mini");
     expect(config.shortcut).toBe("CommandOrControl+Shift+T");
-    expect(config.theme).toBe("dark");
+    expect(config.theme).toBe("system");
     expect(config.language).toBe("system");
   });
 
@@ -71,7 +71,7 @@ describe("config", () => {
   it("getAllConfig returns all key-value pairs", () => {
     const all = getAllConfig();
     expect(all.model).toBe("gpt-5-mini");
-    expect(all.theme).toBe("dark");
+    expect(all.theme).toBe("system");
     expect(all.language).toBe("system");
   });
 });

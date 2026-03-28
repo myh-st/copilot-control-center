@@ -38,7 +38,7 @@ export function getOrCreateDesktopWindow(): BrowserWindow {
     height: windowHeight,
     minWidth: MIN_WIDTH,
     minHeight: MIN_HEIGHT,
-    title: "Copilot Bar",
+    title: "Copilot Control Center",
     show: false,
     vibrancy: "under-window",
     visualEffectState: "active",
@@ -111,4 +111,3 @@ export function getOrCreateDesktopWindow(): BrowserWindow {
 export function getDesktopWindow(): BrowserWindow | null {
   return desktopWindow && !desktopWindow.isDestroyed() ? desktopWindow : null;
 }
-
