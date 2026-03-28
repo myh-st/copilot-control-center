@@ -132,7 +132,7 @@ export class CopilotService {
     try { await this.client!.deleteSession(sid); } catch {}
   }
 
-  private async getOrCreateSession(sessionId: number, model: string): Promise<CopilotSession> {
+  private async getOrCreateSession(sessionId: number, model?: string): Promise<CopilotSession> {
     if (!this.client) {
       await this.initialize();
     }
@@ -141,7 +141,7 @@ export class CopilotService {
     if (existing) return existing;
 
     const session = await this.client!.createSession({
-      model,
+      ...(model ? { model } : {}),
       streaming: true,
       tools: allTools,
       configDir: join(homedir(), ".copilot-bar", "copilot-state"),
@@ -244,7 +244,8 @@ export class CopilotService {
     }
 
     this.currentModel = config.model;
-    const session = await this.getOrCreateSession(sessionId, config.model);
+    const selectedModel = config.model === "autopilot-mode" ? undefined : config.model;
+    const session = await this.getOrCreateSession(sessionId, selectedModel);
 
     // Build message options with optional attachments (document + screenshot can coexist)
     const messageOptions: { prompt: string; attachments?: Array<{ type: "file"; path: string; displayName?: string }> } = { prompt };
@@ -310,7 +311,8 @@ export class CopilotService {
       // Create a fresh session primed with the summary
       const config = loadConfig();
       this.currentModel = config.model;
-      const newSession = await this.getOrCreateSession(sessionId, config.model);
+      const selectedModel = config.model === "autopilot-mode" ? undefined : config.model;
+      const newSession = await this.getOrCreateSession(sessionId, selectedModel);
 
       await newSession.sendAndWait({
         prompt: `[Context from compacted conversation]\n\n${summary}\n\nAcknowledge briefly that you have this context.`,

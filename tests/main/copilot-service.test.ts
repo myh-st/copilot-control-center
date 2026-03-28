@@ -24,7 +24,7 @@ vi.mock("@github/copilot-sdk", () => ({
 
 vi.mock("../../src/main/database.js", () => ({
   loadConfig: vi.fn(() => ({
-    model: "gpt-5-mini",
+    model: "autopilot-mode",
     shortcut: "CommandOrControl+Shift+T",
     theme: "dark",
   })),
@@ -67,6 +67,7 @@ describe("chat", () => {
     mockSendAndWait.mockResolvedValueOnce({ data: { content: "Hello!" } });
     const reply = await service.chat("Hi", 1);
     expect(mockCreateSession).toHaveBeenCalledOnce();
+    expect(mockCreateSession).toHaveBeenCalledWith(expect.not.objectContaining({ model: expect.anything() }));
     expect(reply).toBe("Hello!");
   });
 

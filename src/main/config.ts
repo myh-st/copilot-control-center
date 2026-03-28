@@ -10,7 +10,7 @@ export interface Config {
 }
 
 const DEFAULT_CONFIG: Config = {
-  model: "gpt-5-mini",
+  model: "autopilot-mode",
 };
 
 export function loadConfig(): Config {

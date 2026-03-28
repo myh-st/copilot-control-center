@@ -47,7 +47,7 @@ beforeAll(async () => {
 describe("config", () => {
   it("loadConfig returns defaults on fresh database", () => {
     const config = loadConfig();
-    expect(config.model).toBe("gpt-5-mini");
+    expect(config.model).toBe("autopilot-mode");
     expect(config.shortcut).toBe("CommandOrControl+Shift+T");
     expect(config.theme).toBe("dark");
   });
@@ -69,7 +69,7 @@ describe("config", () => {
 
   it("getAllConfig returns all key-value pairs", () => {
     const all = getAllConfig();
-    expect(all.model).toBe("gpt-5-mini");
+    expect(all.model).toBe("autopilot-mode");
     expect(all.theme).toBe("dark");
   });
 });

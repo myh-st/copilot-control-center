@@ -14,7 +14,7 @@ if (!existsSync(CONFIG_DIR)) {
 
 // Default config values
 const DEFAULT_CONFIG: Record<string, string> = {
-  model: "gpt-5-mini",
+  model: "autopilot-mode",
   shortcut: "CommandOrControl+Shift+T",
   theme: "dark",
 };
