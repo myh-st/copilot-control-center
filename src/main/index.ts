@@ -53,9 +53,9 @@ function createIcon(): Electron.NativeImage {
 // Track current shortcut for re-registration
 let currentShortcut: string | null = null;
 
-function resolveUiLanguage(language?: string): "en" | "th" {
+function resolveLanguage(language?: string): "en" | "th" {
   if (language === "en" || language === "th") return language;
-  return app.getLocale().toLowerCase().startsWith("th") ? "th" : "en";
+  return app.getLocale().toLowerCase().split("-")[0] === "th" ? "th" : "en";
 }
 
 // Register global shortcut
@@ -228,7 +228,7 @@ app.whenReady().then(async () => {
 
   ipcMain.handle("quit-app", async () => {
     const config = loadConfig();
-    const language = resolveUiLanguage(config.language);
+    const language = resolveLanguage(config.language);
     const copy = language === "th"
       ? {
         quit: "ออก",

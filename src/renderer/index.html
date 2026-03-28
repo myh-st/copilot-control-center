@@ -1820,20 +1820,27 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
       };
 
       let isLoading = false;
-      let activeSession = { id: null, title: "" };
+      let activeSession = { id: null, title: "Chat" };
       let currentConfig = {};
       let currentLanguage = "en";
+      let relativeTimeFormatter = new Intl.RelativeTimeFormat(currentLanguage, { numeric: "auto" });
 
       function resolveLanguage(language) {
-        if (language === "en" || language === "th") return language;
-        return navigator.language?.toLowerCase().startsWith("th") ? "th" : "en";
+        if (typeof language === "string" && (language === "en" || language === "th")) return language;
+        return navigator.language?.toLowerCase().split("-")[0] === "th" ? "th" : "en";
+      }
+
+      function setLanguage(language) {
+        currentLanguage = resolveLanguage(language);
+        relativeTimeFormatter = new Intl.RelativeTimeFormat(currentLanguage, { numeric: "auto" });
       }
 
       function t(key, vars = {}) {
         const bundle = translations[currentLanguage] || translations.en;
         const template = bundle[key] || translations.en[key] || key;
         return Object.entries(vars).reduce((text, [name, value]) => {
-          return text.replaceAll(`{${name}}`, String(value));
+          const token = `{${name}}`;
+          return text.split(token).join(String(value));
         }, template);
       }
 
@@ -1902,7 +1909,7 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
       async function loadConfig() {
         try {
           currentConfig = await ipcRenderer.invoke("get-config");
-          currentLanguage = resolveLanguage(currentConfig.language);
+          setLanguage(currentConfig.language);
           modelBadge.textContent = currentConfig.model || t("loading");
           // Apply saved theme
           applyTheme(currentConfig.theme || "dark");
@@ -2260,10 +2267,9 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
           const d = new Date(iso);
           if (Number.isNaN(d.getTime())) return String(ts);
           const diff = Date.now() - d.getTime();
-          const rtf = new Intl.RelativeTimeFormat(currentLanguage, { numeric: "auto" });
           if (diff < 60 * 1000) return t("justNow");
-          if (diff < 60 * 60 * 1000) return rtf.format(-Math.round(diff / (60 * 1000)), "minute");
-          if (diff < 24 * 60 * 60 * 1000) return rtf.format(-Math.round(diff / (60 * 60 * 1000)), "hour");
+          if (diff < 60 * 60 * 1000) return relativeTimeFormatter.format(-Math.round(diff / (60 * 1000)), "minute");
+          if (diff < 24 * 60 * 60 * 1000) return relativeTimeFormatter.format(-Math.round(diff / (60 * 60 * 1000)), "hour");
           return d.toLocaleDateString(currentLanguage, { month: "short", day: "numeric" });
         }
 
@@ -2311,11 +2317,8 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
                     await ipcRenderer.invoke("rename-session", id, next.trim());
                     if (id === activeSession.id) {
                       activeSession.title = next.trim();
-        setSessionBadge(activeSession.title);
-      }
-
-      updateHeaderButtons();
-      updateStaticText();
+                      setSessionBadge(activeSession.title);
+                    }
                     await renderList();
                   }
                 } else if (action === "delete") {
@@ -2755,7 +2758,7 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
         const close = () => {
           // Revert theme if cancelled
           applyTheme(currentConfig.theme || "dark");
-          currentLanguage = resolveLanguage(currentConfig.language);
+          setLanguage(currentConfig.language);
           updateStaticText();
           overlay.remove();
         };
@@ -2788,7 +2791,7 @@ Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช�
             await ipcRenderer.invoke("set-config", "language", newLanguage);
             currentConfig.language = newLanguage;
           }
-          currentLanguage = resolveLanguage(currentConfig.language);
+          setLanguage(currentConfig.language);
           applyTheme(newTheme);
           updateStaticText();
           overlay.remove();
