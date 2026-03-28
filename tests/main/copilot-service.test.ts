@@ -24,7 +24,7 @@ vi.mock("@github/copilot-sdk", () => ({
 
 vi.mock("../../src/main/database.js", () => ({
   loadConfig: vi.fn(() => ({
-    model: "autopilot-mode",
+    model: "gpt-5.4",
     shortcut: "CommandOrControl+Shift+T",
     theme: "dark",
   })),
@@ -67,8 +67,19 @@ describe("chat", () => {
     mockSendAndWait.mockResolvedValueOnce({ data: { content: "Hello!" } });
     const reply = await service.chat("Hi", 1);
     expect(mockCreateSession).toHaveBeenCalledOnce();
-    expect(mockCreateSession).toHaveBeenCalledWith(expect.not.objectContaining({ model: expect.anything() }));
+    expect(mockCreateSession.mock.calls[0][0]).toHaveProperty("model", "gpt-5.4");
     expect(reply).toBe("Hello!");
+  });
+
+  it("omits explicit model when autopilot is selected", async () => {
+    vi.mocked(loadConfig).mockReturnValueOnce({
+      model: "autopilot-mode",
+      shortcut: "CommandOrControl+Shift+T",
+      theme: "dark",
+    });
+    mockSendAndWait.mockResolvedValueOnce({ data: { content: "Hello!" } });
+    await service.chat("Hi", 1);
+    expect(mockCreateSession.mock.calls[0][0]).not.toHaveProperty("model");
   });
 
   it("reuses session on second call", async () => {
