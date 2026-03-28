@@ -1435,6 +1435,7 @@
           <span class="pill-label" id="sessionBadgeLabel">Sessions</span>
           <span class="pill-caret" aria-hidden="true">▾</span>
         </button>
+        <span class="pill" id="modeBadge">Autopilot</span>
         <span class="pill" id="modelBadge">loading...</span>
       </div>
     </div>
@@ -1546,7 +1547,7 @@
       }
 
       const DEFAULT_MODEL = "gpt-5.4";
-      const AUTOPILOT_MODEL = "autopilot-mode";
+      const DEFAULT_MODE = "autopilot";
       const AUTOPILOT_LABEL = "Autopilot";
 
       const input = document.getElementById("input");
@@ -1558,6 +1559,7 @@
       const clearBtn = document.getElementById("clearBtn");
       const quitBtn = document.getElementById("quitBtn");
       const screenshotBtn = document.getElementById("screenshotBtn");
+      const modeBadge = document.getElementById("modeBadge");
       const modelBadge = document.getElementById("modelBadge");
       const sessionBadge = document.getElementById("sessionBadge");
       const sessionBadgeLabel = document.getElementById("sessionBadgeLabel");
@@ -1569,7 +1571,9 @@
       async function loadConfig() {
         try {
           const config = await ipcRenderer.invoke("get-config");
-          modelBadge.textContent = config.model === AUTOPILOT_MODEL ? AUTOPILOT_LABEL : (config.model || DEFAULT_MODEL);
+          modeBadge.textContent = config.mode === DEFAULT_MODE ? AUTOPILOT_LABEL : "Manual";
+          modeBadge.title = "Click to change mode";
+          modelBadge.textContent = config.model || DEFAULT_MODEL;
           modelBadge.title = "Click to change model";
           // Apply saved theme
           applyTheme(config.theme || "dark");
@@ -2330,8 +2334,11 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
       let currentConfig = {};
 
       function ensureModelOption(modelSelect, value, label = value) {
-        if (!value || Array.from(modelSelect.options).find((option) => option.value === value)) {
+        if (!value) {
           return;
+        }
+        for (const option of modelSelect.options) {
+          if (option.value === value) return;
         }
         const opt = document.createElement("option");
         opt.value = value;
@@ -2347,6 +2354,13 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
             <div class="settings-header">
               <h2>Settings</h2>
               <button class="settings-close">&times;</button>
+            </div>
+            <div class="settings-row">
+              <label>Mode</label>
+              <select id="settingsMode">
+                <option value="autopilot">Autopilot</option>
+                <option value="manual">Manual</option>
+              </select>
             </div>
             <div class="settings-row">
               <label>Model</label>
@@ -2377,6 +2391,7 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         document.body.appendChild(overlay);
 
         const modelSelect = overlay.querySelector("#settingsModel");
+        const modeSelect = overlay.querySelector("#settingsMode");
         const shortcutInput = overlay.querySelector("#shortcutInput");
         const shortcutDisplay = overlay.querySelector("#shortcutDisplay");
         const closeBtn = overlay.querySelector(".settings-close");
@@ -2390,7 +2405,6 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
           try {
             const resp = await ipcRenderer.invoke("list-models");
             modelSelect.innerHTML = "";
-            ensureModelOption(modelSelect, AUTOPILOT_MODEL, `${AUTOPILOT_LABEL} (Copilot chooses)`);
             if (resp.success && resp.models.length > 0) {
               for (const m of resp.models) {
                 const opt = document.createElement("option");
@@ -2404,15 +2418,20 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
             }
           } catch {
             modelSelect.innerHTML = "";
-            ensureModelOption(modelSelect, AUTOPILOT_MODEL, `${AUTOPILOT_LABEL} (Copilot chooses)`);
           }
           ensureModelOption(modelSelect, currentModel);
           modelSelect.value = currentModel;
+          modeSelect.value = currentConfig.mode || DEFAULT_MODE;
         })();
 
         // Set current values
+        let newMode = currentConfig.mode || DEFAULT_MODE;
         let newShortcut = currentConfig.shortcut;
         let newTheme = currentConfig.theme || "dark";
+
+        modeSelect.addEventListener("change", () => {
+          newMode = modeSelect.value || DEFAULT_MODE;
+        });
 
         // Theme toggle handling
         themeOptions.forEach((btn) => {
@@ -2460,11 +2479,17 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         // Save handler
         saveBtn.onclick = async () => {
           const newModel = modelSelect.value;
+          if (newMode !== currentConfig.mode) {
+            await ipcRenderer.invoke("set-config", "mode", newMode);
+            currentConfig.mode = newMode;
+            modeBadge.textContent = newMode === DEFAULT_MODE ? AUTOPILOT_LABEL : "Manual";
+            modeBadge.title = "Click to change mode";
+          }
           if (newModel !== currentConfig.model) {
             await ipcRenderer.invoke("set-config", "model", newModel);
             currentConfig.model = newModel;
             configuredModel = newModel;
-            modelBadge.textContent = newModel === AUTOPILOT_MODEL ? AUTOPILOT_LABEL : newModel;
+            modelBadge.textContent = newModel;
             modelBadge.className = "pill";
             modelBadge.title = "Click to change model";
           }
@@ -2486,6 +2511,10 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         showSettings();
       });
       modelBadge.addEventListener("click", async () => {
+        currentConfig = await ipcRenderer.invoke("get-config");
+        showSettings();
+      });
+      modeBadge.addEventListener("click", async () => {
         currentConfig = await ipcRenderer.invoke("get-config");
         showSettings();
       });
@@ -2673,13 +2702,10 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
       ipcRenderer.on("model-usage", (_event, data) => {
         if (!data.model) return;
         const actual = data.model;
-        modelBadge.textContent = actual === AUTOPILOT_MODEL ? AUTOPILOT_LABEL : actual;
-        const isAutopilot = configuredModel === AUTOPILOT_MODEL;
-        modelBadge.title = isAutopilot
-          ? `${AUTOPILOT_LABEL} selected · actual: ${actual}`
-          : `Actual: ${actual}` + (configuredModel && actual !== configuredModel ? ` (configured: ${configuredModel})` : "");
+        modelBadge.textContent = actual;
+        modelBadge.title = `Actual: ${actual}` + (configuredModel && actual !== configuredModel ? ` (configured: ${configuredModel})` : "");
 
-        if (!isAutopilot && configuredModel && actual !== configuredModel) {
+        if (configuredModel && actual !== configuredModel) {
           modelBadge.className = "pill mismatch";
         } else {
           modelBadge.className = "pill verified";

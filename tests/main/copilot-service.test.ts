@@ -25,6 +25,7 @@ vi.mock("@github/copilot-sdk", () => ({
 vi.mock("../../src/main/database.js", () => ({
   loadConfig: vi.fn(() => ({
     model: "gpt-5.4",
+    mode: "autopilot",
     shortcut: "CommandOrControl+Shift+T",
     theme: "dark",
   })),
@@ -68,18 +69,21 @@ describe("chat", () => {
     const reply = await service.chat("Hi", 1);
     expect(mockCreateSession).toHaveBeenCalledOnce();
     expect(mockCreateSession.mock.calls[0][0]).toHaveProperty("model", "gpt-5.4");
+    expect(mockCreateSession.mock.calls[0][0].systemMessage.content).toContain("autopilot mode");
     expect(reply).toBe("Hello!");
   });
 
-  it("omits explicit model when autopilot is selected", async () => {
+  it("uses manual mode instructions when manual mode is selected", async () => {
     vi.mocked(loadConfig).mockReturnValueOnce({
-      model: "autopilot-mode",
+      model: "gpt-5.4",
+      mode: "manual",
       shortcut: "CommandOrControl+Shift+T",
       theme: "dark",
     });
     mockSendAndWait.mockResolvedValueOnce({ data: { content: "Hello!" } });
     await service.chat("Hi", 1);
-    expect(mockCreateSession.mock.calls[0][0]).not.toHaveProperty("model");
+    expect(mockCreateSession.mock.calls[0][0]).toHaveProperty("model", "gpt-5.4");
+    expect(mockCreateSession.mock.calls[0][0].systemMessage.content).toContain("manual mode");
   });
 
   it("reuses session on second call", async () => {
@@ -95,12 +99,29 @@ describe("chat", () => {
 
     vi.mocked(loadConfig).mockReturnValueOnce({
       model: "gpt-5",
+      mode: "autopilot",
       shortcut: "CommandOrControl+Shift+T",
       theme: "dark",
     });
 
     await service.chat("New model", 1);
     // First call creates one session, model change clears and creates another
+    expect(mockCreateSession).toHaveBeenCalledTimes(2);
+    expect(mockDestroy).toHaveBeenCalled();
+  });
+
+  it("recreates sessions when mode changes", async () => {
+    mockSendAndWait.mockResolvedValue({ data: { content: "ok" } });
+    await service.chat("Hello", 1);
+
+    vi.mocked(loadConfig).mockReturnValueOnce({
+      model: "gpt-5.4",
+      mode: "manual",
+      shortcut: "CommandOrControl+Shift+T",
+      theme: "dark",
+    });
+
+    await service.chat("Switch mode", 1);
     expect(mockCreateSession).toHaveBeenCalledTimes(2);
     expect(mockDestroy).toHaveBeenCalled();
   });

@@ -15,6 +15,7 @@ if (!existsSync(CONFIG_DIR)) {
 // Default config values
 const DEFAULT_CONFIG: Record<string, string> = {
   model: "gpt-5.4",
+  mode: "autopilot",
   shortcut: "CommandOrControl+Shift+T",
   theme: "dark",
 };
@@ -235,9 +236,10 @@ export function getAllConfig(): Record<string, string> {
 }
 
 // Convenience function for backward compatibility
-export function loadConfig(): { model: string; shortcut: string; theme: string } {
+export function loadConfig(): { model: string; mode: string; shortcut: string; theme: string } {
   return {
     model: getConfig("model") || DEFAULT_CONFIG.model,
+    mode: getConfig("mode") || DEFAULT_CONFIG.mode,
     shortcut: getConfig("shortcut") || DEFAULT_CONFIG.shortcut,
     theme: getConfig("theme") || DEFAULT_CONFIG.theme,
   };

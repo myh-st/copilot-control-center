@@ -135,6 +135,7 @@ app.whenReady().then(async () => {
       console.error("Error loading config:", error);
       return {
         model: "gpt-5.4",
+        mode: "autopilot",
         shortcut: "CommandOrControl+Shift+T",
         theme: "dark",
       };

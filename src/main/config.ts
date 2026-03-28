@@ -7,10 +7,12 @@ const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 
 export interface Config {
   model: string;
+  mode: string;
 }
 
 const DEFAULT_CONFIG: Config = {
   model: "gpt-5.4",
+  mode: "autopilot",
 };
 
 export function loadConfig(): Config {

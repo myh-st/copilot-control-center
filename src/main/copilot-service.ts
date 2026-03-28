@@ -78,6 +78,7 @@ export class CopilotService {
   private client: CopilotClient | null = null;
   private sessions: Map<number, CopilotSession> = new Map();
   private currentModel: string = "";
+  private currentMode: string = "";
   private onToolEvent: ((event: ToolEvent) => void) | null = null;
   private onWidgetEvent: ((event: WidgetEvent) => void) | null = null;
   private onStreamDelta: ((delta: StreamDelta) => void) | null = null;
@@ -132,7 +133,14 @@ export class CopilotService {
     try { await this.client!.deleteSession(sid); } catch {}
   }
 
-  private async getOrCreateSession(sessionId: number, model?: string): Promise<CopilotSession> {
+  private buildSystemPrompt(mode: string): string {
+    const modePrompt = mode === "autopilot"
+      ? "## Operating Mode\nYou are in autopilot mode. Execute straightforward user requests end-to-end and use available tools proactively without asking for confirmation at every step. Ask for confirmation before destructive, irreversible, privacy-sensitive, or high-risk actions."
+      : "## Operating Mode\nYou are in manual mode. Before taking actions that change system state, run commands, or modify/delete user data, explain the next step briefly and ask the user to confirm first.";
+    return `${SYSTEM_PROMPT}\n\n${modePrompt}`;
+  }
+
+  private async getOrCreateSession(sessionId: number, model: string, mode: string): Promise<CopilotSession> {
     if (!this.client) {
       await this.initialize();
     }
@@ -141,13 +149,13 @@ export class CopilotService {
     if (existing) return existing;
 
     const session = await this.client!.createSession({
-      ...(model ? { model } : {}),
+      model,
       streaming: true,
       tools: allTools,
       configDir: join(homedir(), ".copilot-bar", "copilot-state"),
       systemMessage: {
         mode: "append",
-        content: SYSTEM_PROMPT,
+        content: this.buildSystemPrompt(mode),
       },
     });
 
@@ -238,14 +246,14 @@ export class CopilotService {
     const config = loadConfig();
 
     // Recreate session if model changed
-    if (this.sessions.size > 0 && this.currentModel !== config.model) {
+    if (this.sessions.size > 0 && (this.currentModel !== config.model || this.currentMode !== config.mode)) {
       await Promise.allSettled(Array.from(this.sessions.values()).map((s) => this.destroyAndDelete(s)));
       this.sessions.clear();
     }
 
     this.currentModel = config.model;
-    const selectedModel = config.model === "autopilot-mode" ? undefined : config.model;
-    const session = await this.getOrCreateSession(sessionId, selectedModel);
+    this.currentMode = config.mode;
+    const session = await this.getOrCreateSession(sessionId, config.model, config.mode);
 
     // Build message options with optional attachments (document + screenshot can coexist)
     const messageOptions: { prompt: string; attachments?: Array<{ type: "file"; path: string; displayName?: string }> } = { prompt };
@@ -311,8 +319,8 @@ export class CopilotService {
       // Create a fresh session primed with the summary
       const config = loadConfig();
       this.currentModel = config.model;
-      const selectedModel = config.model === "autopilot-mode" ? undefined : config.model;
-      const newSession = await this.getOrCreateSession(sessionId, selectedModel);
+      this.currentMode = config.mode;
+      const newSession = await this.getOrCreateSession(sessionId, config.model, config.mode);
 
       await newSession.sendAndWait({
         prompt: `[Context from compacted conversation]\n\n${summary}\n\nAcknowledge briefly that you have this context.`,
