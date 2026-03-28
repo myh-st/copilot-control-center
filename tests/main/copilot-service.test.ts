@@ -27,6 +27,7 @@ vi.mock("../../src/main/database.js", () => ({
     model: "gpt-5-mini",
     shortcut: "CommandOrControl+Shift+T",
     theme: "dark",
+    language: "system",
   })),
 }));
 
@@ -85,6 +86,7 @@ describe("chat", () => {
       model: "gpt-5",
       shortcut: "CommandOrControl+Shift+T",
       theme: "dark",
+      language: "system",
     });
 
     await service.chat("New model", 1);
