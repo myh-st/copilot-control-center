@@ -213,6 +213,42 @@
         border-color: var(--border-color);
       }
 
+      .config-btn svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .quick-actions {
+        display: flex;
+        gap: 8px;
+        padding: 0 16px 12px 16px;
+        flex-wrap: wrap;
+      }
+
+      .quick-action-btn {
+        appearance: none;
+        border: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
+      }
+
+      .quick-action-btn:hover {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: var(--accent-color);
+      }
+
       .chat-container {
         flex: 1;
         overflow-y: auto;
@@ -1416,17 +1452,17 @@
                 d="M512.002 246.393v57.384c-.02 7.411-3.696 14.638-9.67 19.011C431.767 374.444 344.695 416 256 416c-98.138 0-196.379-56.542-246.33-93.21-5.975-4.374-9.65-11.6-9.671-19.012v-57.384a35.347 35.347 0 016.857-20.922l15.583-21.085c8.336-11.312 20.757-14.31 33.98-14.31 4.988-56.953 16.794-97.604 45.024-127.354C155.194 5.77 226.56 0 256 0c29.441 0 100.807 5.77 154.557 62.722 28.19 29.75 40.036 70.401 45.025 127.354 13.263 0 25.602 2.936 33.958 14.31l15.583 21.127c4.476 6.077 6.878 13.345 6.878 20.88zm-97.666-26.075c-.677-13.058-11.292-18.19-22.338-21.824-11.64 7.309-25.848 10.183-39.46 10.183-14.454 0-41.432-3.47-63.872-25.869-5.667-5.625-9.527-14.454-12.155-24.247a212.902 212.902 0 00-20.469-1.088c-6.098 0-13.099.349-20.551 1.088-2.628 9.793-6.509 18.622-12.155 24.247-22.4 22.4-49.418 25.87-63.872 25.87-13.612 0-27.86-2.855-39.501-10.184-11.005 3.613-21.558 8.828-22.277 21.824-1.17 24.555-1.272 49.11-1.375 73.645-.041 12.318-.082 24.658-.288 36.976.062 7.166 4.374 13.818 10.882 16.774 52.97 24.124 103.045 36.278 149.137 36.278 46.01 0 96.085-12.154 149.014-36.278 6.508-2.956 10.84-9.608 10.881-16.774.637-36.832.124-73.809-1.642-110.62h.041z"
               />
             </svg>
-            Copilot Bar
+            <span id="appTitleText">Copilot Bar</span>
           </h1>
         </div>
         <div class="header-actions">
-          <button class="config-btn" id="screenshotBtn" title="Capture screenshot">📷</button>
-          <button class="config-btn" id="documentBtn" title="Attach document">📎</button>
-          <button class="config-btn" id="clearBtn" title="Clear chat">🗑️</button>
-          <button class="config-btn" id="configBtn" title="Settings">⚙️</button>
-          <button class="config-btn" id="desktopBtn" title="Open in desktop window" style="display:none">⛶</button>
-          <button class="config-btn" id="closeAppBtn" style="display:none" title="Quit app">✕</button>
-          <button class="config-btn" id="quitBtn" title="Quit app">✕</button>
+          <button class="config-btn" id="screenshotBtn" title="Capture screenshot" aria-label="Capture screenshot"></button>
+          <button class="config-btn" id="documentBtn" title="Attach document" aria-label="Attach document"></button>
+          <button class="config-btn" id="clearBtn" title="Clear chat" aria-label="Clear chat"></button>
+          <button class="config-btn" id="configBtn" title="Settings" aria-label="Settings"></button>
+          <button class="config-btn" id="desktopBtn" title="Open in desktop window" aria-label="Open in desktop window" style="display:none"></button>
+          <button class="config-btn" id="closeAppBtn" style="display:none" title="Quit app" aria-label="Quit app"></button>
+          <button class="config-btn" id="quitBtn" title="Quit app" aria-label="Quit app"></button>
         </div>
       </div>
       <div class="header-row header-meta">
@@ -1436,6 +1472,13 @@
         </button>
         <span class="pill" id="modelBadge">loading...</span>
       </div>
+    </div>
+
+    <div class="quick-actions" id="quickActions" aria-label="Quick actions">
+      <button class="quick-action-btn" id="quickPlanBtn" type="button">Plan</button>
+      <button class="quick-action-btn" id="quickReviewBtn" type="button">Review</button>
+      <button class="quick-action-btn" id="quickSummarizeBtn" type="button">Summarize</button>
+      <button class="quick-action-btn" id="quickTranslateBtn" type="button">Translate</button>
     </div>
 
     <div class="chat-container" id="chatContainer">
@@ -1552,23 +1595,323 @@
       const configBtn = document.getElementById("configBtn");
       const clearBtn = document.getElementById("clearBtn");
       const quitBtn = document.getElementById("quitBtn");
+      const closeAppBtn = document.getElementById("closeAppBtn");
       const screenshotBtn = document.getElementById("screenshotBtn");
+      const documentBtn = document.getElementById("documentBtn");
+      const desktopBtn = document.getElementById("desktopBtn");
       const modelBadge = document.getElementById("modelBadge");
       const sessionBadge = document.getElementById("sessionBadge");
       const sessionBadgeLabel = document.getElementById("sessionBadgeLabel");
+      const appTitleText = document.getElementById("appTitleText");
+      const quickPlanBtn = document.getElementById("quickPlanBtn");
+      const quickReviewBtn = document.getElementById("quickReviewBtn");
+      const quickSummarizeBtn = document.getElementById("quickSummarizeBtn");
+      const quickTranslateBtn = document.getElementById("quickTranslateBtn");
+
+      const BUTTON_ICONS = {
+        screenshot: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h3l1.5-2h7L17 8.5h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>',
+        document: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg>',
+        clear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"></path><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path></svg>',
+        settings: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l1.1 2.5 2.7.4-2 1.9.5 2.7-2.3-1.3-2.3 1.3.5-2.7-2-1.9 2.7-.4Z"></path><circle cx="12" cy="13" r="3.5"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.9 4.9l1.4 1.4"></path><path d="M17.7 17.7l1.4 1.4"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.9 19.1l1.4-1.4"></path><path d="M17.7 6.3l1.4-1.4"></path></svg>',
+        desktop: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v10H4z"></path><path d="M8 19h8"></path><path d="M12 15v4"></path></svg>',
+        quit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>',
+        minimize: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path></svg>',
+      };
+
+      const translations = {
+        en: {
+          appTitle: "Copilot Bar",
+          windowTitle: "Copilot Window",
+          sessions: "Sessions",
+          sessionsWithTitle: "Sessions · {title}",
+          sessionsTitle: "Sessions: {title}",
+          askAnything: "Ask me anything",
+          inputPlaceholder: "Ask Copilot... (try /help)",
+          send: "Send",
+          loading: "loading...",
+          error: "error",
+          captureScreenshot: "Capture screenshot",
+          attachDocument: "Attach document",
+          clearChat: "Clear chat",
+          settings: "Settings",
+          openDesktopWindow: "Open in desktop window",
+          quitApp: "Quit app",
+          minimizeToMenubar: "Minimize to menubar",
+          closeWindow: "Close window",
+          quickActions: "Quick actions",
+          quickPlan: "Plan",
+          quickReview: "Review",
+          quickSummarize: "Summarize",
+          quickTranslate: "Translate",
+          quickPlanPrompt: "Create an implementation plan for this task, including steps, risks, and validation.",
+          quickReviewPrompt: "Review this context and suggest the safest next changes.",
+          quickSummarizePrompt: "Summarize the key points and recommended next actions.",
+          quickTranslatePrompt: "Translate the content between Thai and English while preserving the original meaning and tone.",
+          commandHintHeader: "Slash commands (Tab to autocomplete)",
+          availableCommands: "Available commands: {commands}\n\nTry `/help`.",
+          settingsTitle: "Settings",
+          model: "Model",
+          loadingModels: "Loading models...",
+          theme: "Theme",
+          language: "Language",
+          languageSystem: "System default",
+          languageEnglish: "English",
+          languageThai: "ไทย",
+          light: "Light",
+          dark: "Dark",
+          globalShortcut: "Global Shortcut",
+          shortcutHint: "Press any key combination to change",
+          pressKeys: "Press keys...",
+          cancel: "Cancel",
+          save: "Save",
+          chats: "Chats",
+          close: "Close",
+          newChat: "New chat",
+          refresh: "Refresh",
+          rename: "Rename",
+          delete: "Delete",
+          renameSession: "Rename session",
+          sessionName: "Session name",
+          deleteChatConfirm: "Delete this chat? This will remove its messages.",
+          clearChatConfirm: "Clear messages in this chat?",
+          noActiveSession: "No active session yet. Try again in a moment.",
+          switchUsage: "Usage: `/switch 3` or `/switch My Chat`",
+          noChatFound: "No chat found matching \"{target}\".",
+          compactingConversation: "Compacting conversation…",
+          compactionFailed: "Compaction failed: {error}",
+          compactionError: "Compaction error: {error}",
+          unknownCommand: "Unknown command: /{command}. Try /help.",
+          justNow: "just now",
+          analyzeDocument: "Analyze this {type} document",
+          screenshotCapturing: "Capturing screenshot...",
+          screenshotUploaded: "Screenshot captured and uploaded!",
+          screenshotSaved: "Screenshot saved and copied to clipboard!",
+          screenshotFailed: "Screenshot failed: {error}",
+          screenshotError: "Screenshot error: {error}",
+          documentSelectionFailed: "Document selection failed: {error}",
+          documentError: "Document error: {error}",
+          errorPrefix: "Error: {error}",
+          slashHelpDescription: "Show commands, features, and examples",
+          slashNewDescription: "Start a new chat session",
+          slashSessionsDescription: "Open chat sessions",
+          slashRenameDescription: "Rename current chat (usage: /rename My Chat)",
+          slashSwitchDescription: "Switch chat (usage: /switch 3 or /switch My)",
+          slashCompactDescription: "Compact conversation (summarize & reset context)",
+          helpMarkdown: `# /help
+
+Copilot Bar can **chat**, **run tools**, and **show widgets**.
+
+## Slash Commands
+- \`/help\` — Show commands, features, and examples
+- \`/new\` — Start a new chat session
+- \`/sessions\` — Open chat sessions
+- \`/rename <title>\` — Rename the current chat session
+- \`/switch <id|title>\` — Switch to another chat session
+- \`/compact\` — Summarize and compact the conversation to free context space
+
+## Quick actions
+- **Plan** — Draft an implementation plan
+- **Review** — Ask Copilot to review the current context
+- **Summarize** — Summarize the current attachment or discussion
+- **Translate** — Translate naturally between Thai and English
+
+## Settings
+- Open settings to change the model, theme, language, and global shortcut.`,
+        },
+        th: {
+          appTitle: "Copilot Bar",
+          windowTitle: "Copilot Window",
+          sessions: "เซสชัน",
+          sessionsWithTitle: "เซสชัน · {title}",
+          sessionsTitle: "เซสชัน: {title}",
+          askAnything: "ถามได้ทุกเรื่อง",
+          inputPlaceholder: "สั่ง Copilot ได้เลย... (ลอง /help)",
+          send: "ส่ง",
+          loading: "กำลังโหลด...",
+          error: "ผิดพลาด",
+          captureScreenshot: "จับภาพหน้าจอ",
+          attachDocument: "แนบเอกสาร",
+          clearChat: "ล้างแชท",
+          settings: "ตั้งค่า",
+          openDesktopWindow: "เปิดเป็นหน้าต่างเดสก์ท็อป",
+          quitApp: "ออกจากแอป",
+          minimizeToMenubar: "ย่อกลับไปที่เมนูบาร์",
+          closeWindow: "ปิดหน้าต่าง",
+          quickActions: "คำสั่งด่วน",
+          quickPlan: "วางแผน",
+          quickReview: "รีวิว",
+          quickSummarize: "สรุป",
+          quickTranslate: "แปลภาษา",
+          quickPlanPrompt: "ช่วยวางแผนการทำงานสำหรับงานนี้ โดยสรุปขั้นตอน ความเสี่ยง และวิธีตรวจสอบผลลัพธ์",
+          quickReviewPrompt: "ช่วยรีวิวบริบทนี้และแนะนำการเปลี่ยนแปลงที่ปลอดภัยที่สุดถัดไป",
+          quickSummarizePrompt: "ช่วยสรุปประเด็นสำคัญและสิ่งที่ควรทำต่อไป",
+          quickTranslatePrompt: "ช่วยแปลเนื้อหาระหว่างภาษาไทยและภาษาอังกฤษ โดยคงความหมายและน้ำเสียงเดิมไว้",
+          commandHintHeader: "คำสั่งลัด (กด Tab เพื่อเติมอัตโนมัติ)",
+          availableCommands: "คำสั่งที่ใช้ได้: {commands}\n\nลอง `/help`",
+          settingsTitle: "ตั้งค่า",
+          model: "โมเดล",
+          loadingModels: "กำลังโหลดโมเดล...",
+          theme: "ธีม",
+          language: "ภาษา",
+          languageSystem: "ตามระบบ",
+          languageEnglish: "English",
+          languageThai: "ไทย",
+          light: "สว่าง",
+          dark: "มืด",
+          globalShortcut: "ปุ่มลัดหลัก",
+          shortcutHint: "กดคีย์ผสมที่ต้องการเพื่อเปลี่ยน",
+          pressKeys: "กดปุ่ม...",
+          cancel: "ยกเลิก",
+          save: "บันทึก",
+          chats: "แชท",
+          close: "ปิด",
+          newChat: "แชทใหม่",
+          refresh: "รีเฟรช",
+          rename: "เปลี่ยนชื่อ",
+          delete: "ลบ",
+          renameSession: "เปลี่ยนชื่อเซสชัน",
+          sessionName: "ชื่อเซสชัน",
+          deleteChatConfirm: "ลบแชทนี้หรือไม่? ข้อความทั้งหมดจะถูกลบด้วย",
+          clearChatConfirm: "ล้างข้อความทั้งหมดในแชทนี้หรือไม่?",
+          noActiveSession: "ยังไม่มีเซสชันที่ใช้งานอยู่ ลองอีกครั้งในอีกสักครู่",
+          switchUsage: "วิธีใช้: `/switch 3` หรือ `/switch ชื่อแชท`",
+          noChatFound: "ไม่พบแชทที่ตรงกับ \"{target}\"",
+          compactingConversation: "กำลังย่อบทสนทนา…",
+          compactionFailed: "ย่อบทสนทนาไม่สำเร็จ: {error}",
+          compactionError: "เกิดข้อผิดพลาดขณะย่อบทสนทนา: {error}",
+          unknownCommand: "ไม่รู้จักคำสั่ง /{command} ลองใช้ /help",
+          justNow: "เมื่อสักครู่",
+          analyzeDocument: "ช่วยวิเคราะห์เอกสารประเภท {type} นี้",
+          screenshotCapturing: "กำลังจับภาพหน้าจอ...",
+          screenshotUploaded: "จับภาพหน้าจอและอัปโหลดแล้ว!",
+          screenshotSaved: "บันทึกภาพหน้าจอและคัดลอกไปยังคลิปบอร์ดแล้ว!",
+          screenshotFailed: "จับภาพหน้าจอไม่สำเร็จ: {error}",
+          screenshotError: "เกิดข้อผิดพลาดขณะจับภาพหน้าจอ: {error}",
+          documentSelectionFailed: "เลือกเอกสารไม่สำเร็จ: {error}",
+          documentError: "เกิดข้อผิดพลาดเกี่ยวกับเอกสาร: {error}",
+          errorPrefix: "ข้อผิดพลาด: {error}",
+          slashHelpDescription: "แสดงคำสั่ง ความสามารถ และตัวอย่าง",
+          slashNewDescription: "เริ่มเซสชันแชทใหม่",
+          slashSessionsDescription: "เปิดรายการเซสชันแชท",
+          slashRenameDescription: "เปลี่ยนชื่อแชทปัจจุบัน (เช่น /rename แชทงาน)",
+          slashSwitchDescription: "สลับไปยังแชทอื่น (เช่น /switch 3 หรือ /switch งาน)",
+          slashCompactDescription: "ย่อบทสนทนาเพื่อคืนพื้นที่บริบท",
+          helpMarkdown: `# /help
+
+Copilot Bar ใช้สำหรับ **แชท**, **เรียกใช้เครื่องมือ**, และ **แสดงวิดเจ็ต** ได้
+
+## คำสั่งลัด
+- \`/help\` — แสดงคำสั่ง ความสามารถ และตัวอย่าง
+- \`/new\` — เริ่มเซสชันแชทใหม่
+- \`/sessions\` — เปิดรายการเซสชันแชท
+- \`/rename <title>\` — เปลี่ยนชื่อเซสชันแชทปัจจุบัน
+- \`/switch <id|title>\` — สลับไปยังเซสชันอื่น
+- \`/compact\` — สรุปและย่อบทสนทนาเพื่อลดการใช้บริบท
+
+## คำสั่งด่วน
+- **วางแผน** — ร่างแผนการทำงาน
+- **รีวิว** — ขอให้ Copilot รีวิวบริบทปัจจุบัน
+- **สรุป** — สรุปไฟล์แนบหรือบทสนทนาปัจจุบัน
+- **แปลภาษา** — แปลระหว่างไทยและอังกฤษอย่างเป็นธรรมชาติ
+
+## ตั้งค่า
+- เปิดหน้าตั้งค่าเพื่อเปลี่ยนโมเดล ธีม ภาษา และปุ่มลัดหลัก`,
+        },
+      };
 
       let isLoading = false;
-      let activeSession = { id: null, title: "Chat" };
+      let activeSession = { id: null, title: "" };
+      let currentConfig = {};
+      let currentLanguage = "en";
+
+      function resolveLanguage(language) {
+        if (language === "en" || language === "th") return language;
+        return navigator.language?.toLowerCase().startsWith("th") ? "th" : "en";
+      }
+
+      function t(key, vars = {}) {
+        const bundle = translations[currentLanguage] || translations.en;
+        const template = bundle[key] || translations.en[key] || key;
+        return Object.entries(vars).reduce((text, [name, value]) => {
+          return text.replaceAll(`{${name}}`, String(value));
+        }, template);
+      }
+
+      function setButtonIcon(button, iconName) {
+        if (!button) return;
+        button.innerHTML = BUTTON_ICONS[iconName] || "";
+      }
+
+      function getSlashCommands() {
+        return [
+          { command: "/help", description: t("slashHelpDescription") },
+          { command: "/new", description: t("slashNewDescription") },
+          { command: "/sessions", description: t("slashSessionsDescription") },
+          { command: "/rename", description: t("slashRenameDescription") },
+          { command: "/switch", description: t("slashSwitchDescription") },
+          { command: "/compact", description: t("slashCompactDescription") },
+        ];
+      }
+
+      function updateHeaderButtons() {
+        const desktopMode = new URLSearchParams(window.location.search).get("mode") === "desktop";
+        setButtonIcon(screenshotBtn, "screenshot");
+        setButtonIcon(documentBtn, "document");
+        setButtonIcon(clearBtn, "clear");
+        setButtonIcon(configBtn, "settings");
+        setButtonIcon(desktopBtn, "desktop");
+        setButtonIcon(closeAppBtn, "quit");
+        setButtonIcon(quitBtn, desktopMode ? "minimize" : "quit");
+      }
+
+      function updateStaticText() {
+        const desktopMode = new URLSearchParams(window.location.search).get("mode") === "desktop";
+        appTitleText.textContent = desktopMode ? t("windowTitle") : t("appTitle");
+        screenshotBtn.title = t("captureScreenshot");
+        screenshotBtn.setAttribute("aria-label", t("captureScreenshot"));
+        documentBtn.title = t("attachDocument");
+        documentBtn.setAttribute("aria-label", t("attachDocument"));
+        clearBtn.title = t("clearChat");
+        clearBtn.setAttribute("aria-label", t("clearChat"));
+        configBtn.title = t("settings");
+        configBtn.setAttribute("aria-label", t("settings"));
+        desktopBtn.title = t("openDesktopWindow");
+        desktopBtn.setAttribute("aria-label", t("openDesktopWindow"));
+        closeAppBtn.title = t("quitApp");
+        closeAppBtn.setAttribute("aria-label", t("quitApp"));
+        quitBtn.title = desktopMode ? t("minimizeToMenubar") : t("quitApp");
+        quitBtn.setAttribute("aria-label", desktopMode ? t("minimizeToMenubar") : t("quitApp"));
+        document.getElementById("quickActions").setAttribute("aria-label", t("quickActions"));
+        quickPlanBtn.textContent = t("quickPlan");
+        quickReviewBtn.textContent = t("quickReview");
+        quickSummarizeBtn.textContent = t("quickSummarize");
+        quickTranslateBtn.textContent = t("quickTranslate");
+        if (!isLoading) sendBtn.textContent = t("send");
+        input.placeholder = t("inputPlaceholder");
+        if (emptyState) {
+          const label = emptyState.querySelector("p");
+          if (label) label.textContent = t("askAnything");
+        }
+        setSessionBadge(activeSession.title);
+      }
+
+      updateHeaderButtons();
+      updateStaticText();
 
       // Load and display current model + theme
       async function loadConfig() {
         try {
-          const config = await ipcRenderer.invoke("get-config");
-          modelBadge.textContent = config.model || "unknown";
+          currentConfig = await ipcRenderer.invoke("get-config");
+          currentLanguage = resolveLanguage(currentConfig.language);
+          modelBadge.textContent = currentConfig.model || t("loading");
           // Apply saved theme
-          applyTheme(config.theme || "dark");
+          applyTheme(currentConfig.theme || "dark");
+          updateHeaderButtons();
+          updateStaticText();
         } catch (err) {
-          modelBadge.textContent = "error";
+          updateHeaderButtons();
+          updateStaticText();
+          modelBadge.textContent = t("error");
         }
       }
 
@@ -1604,17 +1947,17 @@
               <path d="M181.33 266.143c0-11.497 9.32-20.818 20.818-20.818 11.498 0 20.819 9.321 20.819 20.818v38.373c0 11.497-9.321 20.818-20.819 20.818-11.497 0-20.818-9.32-20.818-20.818v-38.373zM308.807 245.325c-11.477 0-20.798 9.321-20.798 20.818v38.373c0 11.497 9.32 20.818 20.798 20.818 11.497 0 20.818-9.32 20.818-20.818v-38.373c0-11.497-9.32-20.818-20.818-20.818z" />
               <path d="M512.002 246.393v57.384c-.02 7.411-3.696 14.638-9.67 19.011C431.767 374.444 344.695 416 256 416c-98.138 0-196.379-56.542-246.33-93.21-5.975-4.374-9.65-11.6-9.671-19.012v-57.384a35.347 35.347 0 016.857-20.922l15.583-21.085c8.336-11.312 20.757-14.31 33.98-14.31 4.988-56.953 16.794-97.604 45.024-127.354C155.194 5.77 226.56 0 256 0c29.441 0 100.807 5.77 154.557 62.722 28.19 29.75 40.036 70.401 45.025 127.354 13.263 0 25.602 2.936 33.958 14.31l15.583 21.127c4.476 6.077 6.878 13.345 6.878 20.88zm-97.666-26.075c-.677-13.058-11.292-18.19-22.338-21.824-11.64 7.309-25.848 10.183-39.46 10.183-14.454 0-41.432-3.47-63.872-25.869-5.667-5.625-9.527-14.454-12.155-24.247a212.902 212.902 0 00-20.469-1.088c-6.098 0-13.099.349-20.551 1.088-2.628 9.793-6.509 18.622-12.155 24.247-22.4 22.4-49.418 25.87-63.872 25.87-13.612 0-27.86-2.855-39.501-10.184-11.005 3.613-21.558 8.828-22.277 21.824-1.17 24.555-1.272 49.11-1.375 73.645-.041 12.318-.082 24.658-.288 36.976.062 7.166 4.374 13.818 10.882 16.774 52.97 24.124 103.045 36.278 149.137 36.278 46.01 0 96.085-12.154 149.014-36.278 6.508-2.956 10.84-9.608 10.881-16.774.637-36.832.124-73.809-1.642-110.62h.041z" />
             </svg>
-            <p>Ask me anything</p>
+            <p>${escapeHtml(t("askAnything"))}</p>
           </div>
         `;
         emptyState = document.getElementById("emptyState");
       }
 
       function setSessionBadge(title) {
-        const t = (title && String(title).trim()) ? String(title).trim() : "";
-        const label = t ? `Sessions · ${t}` : "Sessions";
+        const sessionTitle = (title && String(title).trim()) ? String(title).trim() : "";
+        const label = sessionTitle ? t("sessionsWithTitle", { title: sessionTitle }) : t("sessions");
         sessionBadgeLabel.textContent = label;
-        sessionBadge.title = t ? `Sessions: ${t}` : "Sessions";
+        sessionBadge.title = sessionTitle ? t("sessionsTitle", { title: sessionTitle }) : t("sessions");
       }
 
       function escapeHtml(unsafe) {
@@ -1636,8 +1979,8 @@
               <div class="modal-title">${escapeHtml(title)}</div>
               <input class="modal-input" id="modalInput" type="text" />
               <div class="modal-actions">
-                <button class="modal-btn" id="modalCancel" type="button">Cancel</button>
-                <button class="modal-btn primary" id="modalConfirm" type="button">${escapeHtml(confirmText || "Save")}</button>
+                <button class="modal-btn" id="modalCancel" type="button">${escapeHtml(t("cancel"))}</button>
+                <button class="modal-btn primary" id="modalConfirm" type="button">${escapeHtml(confirmText || t("save"))}</button>
               </div>
             </div>
           `;
@@ -1688,6 +2031,18 @@
         updateSendBtn();
         input.focus();
       }
+
+      function applyQuickActionPrompt(promptKey) {
+        input.value = t(promptKey);
+        input.dispatchEvent(new Event("input"));
+        renderCommandHint([]);
+        input.focus();
+      }
+
+      quickPlanBtn.addEventListener("click", () => applyQuickActionPrompt("quickPlanPrompt"));
+      quickReviewBtn.addEventListener("click", () => applyQuickActionPrompt("quickReviewPrompt"));
+      quickSummarizeBtn.addEventListener("click", () => applyQuickActionPrompt("quickSummarizePrompt"));
+      quickTranslateBtn.addEventListener("click", () => applyQuickActionPrompt("quickTranslatePrompt"));
 
       // --- Screenshot helpers ---
       const SCREENSHOT_PREFIX_RE = /^\[screenshot:(.+?)\]([\s\S]*)$/;
@@ -1800,15 +2155,6 @@
         if (indicator) indicator.remove();
       }
 
-      const slashCommands = [
-        { command: "/help", description: "Show commands, features, and examples" },
-        { command: "/new", description: "Start a new chat session" },
-        { command: "/sessions", description: "Open chat sessions" },
-        { command: "/rename", description: "Rename current chat (usage: /rename My Chat)" },
-        { command: "/switch", description: "Switch chat (usage: /switch 3 or /switch My)" },
-        { command: "/compact", description: "Compact conversation (summarize & reset context)" },
-      ];
-
       function renderCommandHint(items) {
         if (!items || items.length === 0) {
           commandHint.style.display = "none";
@@ -1818,7 +2164,7 @@
 
         commandHint.style.display = "block";
         commandHint.innerHTML = `
-          <div class="command-hint-header">Slash commands (Tab to autocomplete)</div>
+          <div class="command-hint-header">${escapeHtml(t("commandHintHeader"))}</div>
           ${items
             .map(
               (c) => `
@@ -1850,6 +2196,7 @@
         }
 
         const query = value.slice(1).trim().toLowerCase();
+        const slashCommands = getSlashCommands();
         const matches = slashCommands
           .filter((c) => c.command.slice(1).toLowerCase().startsWith(query))
           .slice(0, 8);
@@ -1857,50 +2204,7 @@
       }
 
       function getHelpMarkdown() {
-        return `# /help
-
-Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show widgets**.
-
-## Slash Commands
-- \`/help\` — Show commands, features, and examples
-- \`/new\` — Start a new chat session
-- \`/sessions\` — Open chat sessions
-- \`/rename <title>\` — Rename the current chat session
-- \`/switch <id|title>\` — Switch to another chat session
-- \`/compact\` — Summarize & compact the conversation to free context space
-
-## Chat & AI
-- Ask questions or request help: “Explain this error”, “Summarize these notes…”
-- Markdown rendering: code blocks and formatting render automatically.
-- Chat history persists across sessions.
-
-## System Controls (macOS)
-- Volume: "Set volume to 50%", "Mute my computer"
-- Brightness (optional): \`brew install brightness\`, then "Set brightness to 80%"
-- Do Not Disturb / Focus: "Turn on do not disturb", "Is focus mode enabled?"
-- Wi‑Fi: "Turn off WiFi", "What network am I connected to?", "Show my saved networks"
-- Bluetooth: "Turn on Bluetooth", "Turn off Bluetooth", "Is Bluetooth on?" (requires \`brew install blueutil\`)
-- App launcher: "Open Safari", "Open Terminal"
-- Shell: “Run \`ls -la ~/Documents\`”, “Show disk usage”
-
-## Widgets & Productivity
-- Timers: “Start a timer”, “Set a 5 minute countdown”, “Start a Pomodoro”
-- World clock: “What time is it in Tokyo?”, “Show me a world clock”
-- Unit converter: “Convert 100 pounds to kilograms”, “Open the temperature converter”
-- Wi‑Fi widget: “Show my saved networks”
-
-## Screenshot Analysis
-- Use the 📸 button or type: “Take a screenshot” / “Capture my screen and tell me what you see”
-- If configured, screenshots can be uploaded via S3-compatible storage (\`.env.example\`).
-
-## Reminders
-- “Remind me to take a break in 30 minutes”
-- “What reminders do I have?”
-
-## Settings & Shortcuts
-- Open settings (⚙️) to change model, theme, and global shortcut.
-- Default shortcut: \`Cmd+Shift+T\` (macOS) / \`Ctrl+Shift+T\` (Windows/Linux)
-`;
+        return t("helpMarkdown");
       }
 
       async function switchToSession(sessionId) {
@@ -1926,12 +2230,12 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         overlay.innerHTML = `
           <div class="sessions-panel">
             <div class="sessions-header">
-              <h2>Chats</h2>
-              <button class="settings-close" aria-label="Close">&times;</button>
+              <h2>${escapeHtml(t("chats"))}</h2>
+              <button class="settings-close" aria-label="${escapeHtml(t("close"))}">&times;</button>
             </div>
             <div class="sessions-actions">
-              <button class="sessions-btn primary" id="newChatBtn">New chat</button>
-              <button class="sessions-btn" id="refreshChatsBtn">Refresh</button>
+              <button class="sessions-btn primary" id="newChatBtn">${escapeHtml(t("newChat"))}</button>
+              <button class="sessions-btn" id="refreshChatsBtn">${escapeHtml(t("refresh"))}</button>
             </div>
             <div class="sessions-list" id="sessionsList"></div>
           </div>
@@ -1956,10 +2260,11 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
           const d = new Date(iso);
           if (Number.isNaN(d.getTime())) return String(ts);
           const diff = Date.now() - d.getTime();
-          if (diff < 60 * 1000) return "just now";
-          if (diff < 60 * 60 * 1000) return `${Math.round(diff / (60 * 1000))}m ago`;
-          if (diff < 24 * 60 * 60 * 1000) return `${Math.round(diff / (60 * 60 * 1000))}h ago`;
-          return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+          const rtf = new Intl.RelativeTimeFormat(currentLanguage, { numeric: "auto" });
+          if (diff < 60 * 1000) return t("justNow");
+          if (diff < 60 * 60 * 1000) return rtf.format(-Math.round(diff / (60 * 1000)), "minute");
+          if (diff < 24 * 60 * 60 * 1000) return rtf.format(-Math.round(diff / (60 * 60 * 1000)), "hour");
+          return d.toLocaleDateString(currentLanguage, { month: "short", day: "numeric" });
         }
 
         async function renderList() {
@@ -1976,8 +2281,8 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
                     <div class="session-item-meta">#${s.id}${meta ? " • " + meta : ""}</div>
                   </div>
                   <div class="session-item-actions">
-                    <button class="session-icon-btn" data-action="rename" title="Rename">✎</button>
-                    <button class="session-icon-btn" data-action="delete" title="Delete">🗑️</button>
+                    <button class="session-icon-btn" data-action="rename" title="${escapeHtml(t("rename"))}">✎</button>
+                    <button class="session-icon-btn" data-action="delete" title="${escapeHtml(t("delete"))}">🗑️</button>
                   </div>
                 </div>
               `;
@@ -1997,21 +2302,24 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
                 } else if (action === "rename") {
                   const current = row.querySelector(".session-item-title")?.textContent || "Chat";
                   const next = await openTextModal({
-                    title: "Rename session",
+                    title: t("renameSession"),
                     initialValue: current,
-                    placeholder: "Session name",
-                    confirmText: "Rename",
+                    placeholder: t("sessionName"),
+                    confirmText: t("rename"),
                   });
                   if (next && next.trim()) {
                     await ipcRenderer.invoke("rename-session", id, next.trim());
                     if (id === activeSession.id) {
                       activeSession.title = next.trim();
-                      setSessionBadge(activeSession.title);
-                    }
+        setSessionBadge(activeSession.title);
+      }
+
+      updateHeaderButtons();
+      updateStaticText();
                     await renderList();
                   }
                 } else if (action === "delete") {
-                  if (confirm("Delete this chat? This will remove its messages.")) {
+                  if (confirm(t("deleteChatConfirm"))) {
                     await ipcRenderer.invoke("delete-session", id);
                     activeSession = await ipcRenderer.invoke("get-active-session");
                     setSessionBadge(activeSession.title);
@@ -2046,7 +2354,8 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         const command = parts[0]?.toLowerCase();
         const args = parts.slice(1);
         if (!command) {
-          addMessage("Available commands: " + slashCommands.map((c) => c.command).join(", ") + "\n\nTry `/help`.", "assistant");
+          const slashCommands = getSlashCommands();
+          addMessage(t("availableCommands", { commands: slashCommands.map((c) => c.command).join(", ") }), "assistant");
           return true;
         }
 
@@ -2061,22 +2370,22 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         }
 
         if (command === "new") {
-          createAndSwitchSession().catch((e) => addMessage(`Error: ${e.message || e}`, "error"));
+          createAndSwitchSession().catch((e) => addMessage(t("errorPrefix", { error: e.message || e }), "error"));
           return true;
         }
 
         if (command === "rename") {
           if (!activeSession.id) {
-            addMessage("No active session yet. Try again in a moment.", "error");
+            addMessage(t("noActiveSession"), "error");
             return true;
           }
           const title = args.join(" ").trim();
           if (!title) {
             const next = await openTextModal({
-              title: "Rename session",
+              title: t("renameSession"),
               initialValue: activeSession.title || "",
-              placeholder: "Session name",
-              confirmText: "Rename",
+              placeholder: t("sessionName"),
+              confirmText: t("rename"),
             });
             if (next && next.trim()) {
               ipcRenderer.invoke("rename-session", activeSession.id, next.trim()).then(() => {
@@ -2096,27 +2405,27 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         if (command === "switch") {
           const target = args.join(" ").trim();
           if (!target) {
-            addMessage("Usage: `/switch 3` or `/switch My Chat`", "assistant");
+            addMessage(t("switchUsage"), "assistant");
             return true;
           }
           const asId = Number.parseInt(target, 10);
           if (!Number.isNaN(asId) && asId > 0) {
-            switchToSession(asId).catch((e) => addMessage(`Error: ${e.message || e}`, "error"));
+            switchToSession(asId).catch((e) => addMessage(t("errorPrefix", { error: e.message || e }), "error"));
             return true;
           }
           ipcRenderer.invoke("list-sessions", 50).then((sessions) => {
             const match = sessions.find((s) => (s.title || "").toLowerCase().startsWith(target.toLowerCase()));
             if (!match) {
-              addMessage(`No chat found matching "${target}".`, "error");
+              addMessage(t("noChatFound", { target }), "error");
               return;
             }
-            switchToSession(match.id).catch((e) => addMessage(`Error: ${e.message || e}`, "error"));
+            switchToSession(match.id).catch((e) => addMessage(t("errorPrefix", { error: e.message || e }), "error"));
           });
           return true;
         }
 
         if (command === "compact") {
-          addMessage("Compacting conversation…", "assistant", false);
+          addMessage(t("compactingConversation"), "assistant", false);
           showTypingIndicator();
           try {
             const result = await ipcRenderer.invoke("compact-session", activeSession.id || undefined);
@@ -2124,16 +2433,16 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
             if (result.success) {
               await loadChatHistory();
             } else {
-              addMessage(`Compaction failed: ${result.error}`, "error");
+              addMessage(t("compactionFailed", { error: result.error }), "error");
             }
           } catch (e) {
             hideTypingIndicator();
-            addMessage(`Compaction error: ${e.message}`, "error");
+            addMessage(t("compactionError", { error: e.message }), "error");
           }
           return true;
         }
 
-        addMessage(`Unknown command: /${command}. Try /help.`, "error");
+        addMessage(t("unknownCommand", { command }), "error");
         return true;
       }
 
@@ -2219,7 +2528,7 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
           messageData.attachment = pendingDocument;
           // If no prompt, use a default one
           if (!prompt) {
-            messageData.prompt = `Analyze this ${pendingDocument.type} document`;
+            messageData.prompt = t("analyzeDocument", { type: pendingDocument.type });
           }
           // Clear attachment after including it
           clearAttachment();
@@ -2252,18 +2561,18 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
             }
           } else {
             if (streamingBubble) streamingBubble.remove();
-            addMessage("Error: " + result.error, "error");
+            addMessage(t("errorPrefix", { error: result.error }), "error");
           }
         } catch (err) {
           hideTypingIndicator();
           if (streamingBubble) streamingBubble.remove();
-          addMessage("Error: " + err.message, "error");
+          addMessage(t("errorPrefix", { error: err.message }), "error");
         } finally {
           streamingBubble = null;
           streamingMessageId = null;
           streamedContent = "";
           isLoading = false;
-          sendBtn.textContent = "Send";
+          sendBtn.textContent = t("send");
           updateSendBtn();
           input.focus();
         }
@@ -2280,6 +2589,7 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
 
         if (e.key === "Tab" && input.value.startsWith("/")) {
           const query = input.value.slice(1).trim().toLowerCase();
+          const slashCommands = getSlashCommands();
           const first = slashCommands.find((c) => c.command.slice(1).toLowerCase().startsWith(query));
           if (first) {
             e.preventDefault();
@@ -2321,39 +2631,45 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
       bootstrap();
 
       // Settings panel
-      let currentConfig = {};
-
       function showSettings() {
         const overlay = document.createElement("div");
         overlay.className = "settings-overlay";
         overlay.innerHTML = `
           <div class="settings-panel">
             <div class="settings-header">
-              <h2>Settings</h2>
-              <button class="settings-close">&times;</button>
+              <h2>${escapeHtml(t("settingsTitle"))}</h2>
+              <button class="settings-close" aria-label="${escapeHtml(t("close"))}">&times;</button>
             </div>
             <div class="settings-row">
-              <label>Model</label>
+              <label>${escapeHtml(t("model"))}</label>
               <select id="settingsModel">
-                <option value="">Loading models...</option>
+                <option value="">${escapeHtml(t("loadingModels"))}</option>
               </select>
             </div>
             <div class="settings-row">
-              <label>Theme</label>
+              <label>${escapeHtml(t("theme"))}</label>
               <div class="theme-toggle">
-                <button class="theme-option ${currentConfig.theme === 'light' ? 'active' : ''}" data-theme="light">☀️ Light</button>
-                <button class="theme-option ${currentConfig.theme !== 'light' ? 'active' : ''}" data-theme="dark">🌙 Dark</button>
+                <button class="theme-option ${currentConfig.theme === 'light' ? 'active' : ''}" data-theme="light">${escapeHtml(t("light"))}</button>
+                <button class="theme-option ${currentConfig.theme !== 'light' ? 'active' : ''}" data-theme="dark">${escapeHtml(t("dark"))}</button>
               </div>
             </div>
             <div class="settings-row">
-              <label>Global Shortcut</label>
+              <label>${escapeHtml(t("language"))}</label>
+              <select id="settingsLanguage">
+                <option value="system">${escapeHtml(t("languageSystem"))}</option>
+                <option value="en">${escapeHtml(t("languageEnglish"))}</option>
+                <option value="th">${escapeHtml(t("languageThai"))}</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <label>${escapeHtml(t("globalShortcut"))}</label>
               <div class="shortcut-display" id="shortcutDisplay">${currentConfig.shortcut || "..."}</div>
-              <p class="settings-hint">Press any key combination to change</p>
-              <input type="text" id="shortcutInput" placeholder="Press keys..." readonly style="margin-top: 8px;" />
+              <p class="settings-hint">${escapeHtml(t("shortcutHint"))}</p>
+              <input type="text" id="shortcutInput" placeholder="${escapeHtml(t("pressKeys"))}" readonly style="margin-top: 8px;" />
             </div>
             <div class="settings-actions">
-              <button class="settings-btn secondary" id="settingsCancel">Cancel</button>
-              <button class="settings-btn primary" id="settingsSave">Save</button>
+              <button class="settings-btn secondary" id="settingsCancel">${escapeHtml(t("cancel"))}</button>
+              <button class="settings-btn primary" id="settingsSave">${escapeHtml(t("save"))}</button>
             </div>
           </div>
         `;
@@ -2361,6 +2677,7 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         document.body.appendChild(overlay);
 
         const modelSelect = overlay.querySelector("#settingsModel");
+        const languageSelect = overlay.querySelector("#settingsLanguage");
         const shortcutInput = overlay.querySelector("#shortcutInput");
         const shortcutDisplay = overlay.querySelector("#shortcutDisplay");
         const closeBtn = overlay.querySelector(".settings-close");
@@ -2396,6 +2713,8 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         // Set current values
         let newShortcut = currentConfig.shortcut;
         let newTheme = currentConfig.theme || "dark";
+        let newLanguage = currentConfig.language || "system";
+        languageSelect.value = newLanguage;
 
         // Theme toggle handling
         themeOptions.forEach((btn) => {
@@ -2406,6 +2725,10 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
             // Preview theme immediately
             applyTheme(newTheme);
           });
+        });
+
+        languageSelect.addEventListener("change", () => {
+          newLanguage = languageSelect.value || "system";
         });
 
         // Shortcut recording
@@ -2432,6 +2755,8 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         const close = () => {
           // Revert theme if cancelled
           applyTheme(currentConfig.theme || "dark");
+          currentLanguage = resolveLanguage(currentConfig.language);
+          updateStaticText();
           overlay.remove();
         };
         closeBtn.onclick = close;
@@ -2459,7 +2784,13 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
             await ipcRenderer.invoke("set-config", "theme", newTheme);
             currentConfig.theme = newTheme;
           }
+          if (newLanguage !== currentConfig.language) {
+            await ipcRenderer.invoke("set-config", "language", newLanguage);
+            currentConfig.language = newLanguage;
+          }
+          currentLanguage = resolveLanguage(currentConfig.language);
           applyTheme(newTheme);
+          updateStaticText();
           overlay.remove();
         };
       }
@@ -2475,24 +2806,20 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
 
       // Clear chat
       clearBtn.addEventListener("click", async () => {
-        if (!confirm("Clear messages in this chat?")) return;
+        if (!confirm(t("clearChatConfirm"))) return;
         await ipcRenderer.invoke("clear-chat-history", activeSession.id || undefined);
         renderEmptyState();
         input.focus();
       });
 
       // Desktop mode detection + quit/desktop button behavior
-      const desktopBtn = document.getElementById("desktopBtn");
       const isDesktopMode = new URLSearchParams(window.location.search).get("mode") === "desktop";
-
-      const closeAppBtn = document.getElementById("closeAppBtn");
 
       if (isDesktopMode) {
         document.body.classList.add("desktop-mode");
         desktopBtn.style.display = "none";
-        quitBtn.textContent = "⎽";
-        quitBtn.title = "Minimize to menubar";
-        document.querySelector(".header-title h1").lastChild.textContent = " Copilot Window";
+        updateHeaderButtons();
+        updateStaticText();
         quitBtn.addEventListener("click", () => {
           window.close();
         });
@@ -2524,7 +2851,7 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
           emptyState.remove();
         }
 
-        const tempMsg = addMessage("Capturing screenshot...", "assistant", false);
+        const tempMsg = addMessage(t("screenshotCapturing"), "assistant", false);
 
         try {
           const result = await ipcRenderer.invoke("capture-screenshot");
@@ -2534,15 +2861,15 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
           if (result.success) {
             const imageRef = result.url || result.path;
             const label = result.url
-              ? "Screenshot captured and uploaded!"
-              : "Screenshot saved and copied to clipboard!";
+              ? t("screenshotUploaded")
+              : t("screenshotSaved");
             addMessage(`[screenshot:${imageRef}]${label}`, "assistant");
           } else {
-            addMessage(`Screenshot failed: ${result.error}`, "error");
+            addMessage(t("screenshotFailed", { error: result.error }), "error");
           }
         } catch (err) {
           if (tempMsg && tempMsg.parentNode) tempMsg.remove();
-          addMessage(`Screenshot error: ${err.message || "Unknown error"}`, "error");
+          addMessage(t("screenshotError", { error: err.message || "Unknown error" }), "error");
         }
       });
 
@@ -2557,10 +2884,10 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
             renderAttachmentPreview(pendingDocument);
             input.focus();
           } else if (result.error) {
-            addMessage(`Document selection failed: ${result.error}`, "error");
+            addMessage(t("documentSelectionFailed", { error: result.error }), "error");
           }
         } catch (err) {
-          addMessage(`Document error: ${err.message || "Unknown error"}`, "error");
+          addMessage(t("documentError", { error: err.message || "Unknown error" }), "error");
         }
       });
 
@@ -2641,7 +2968,7 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
       ipcRenderer.on("screenshot-captured", (_event, data) => {
         const imageRef = data.url || data.path;
         if (imageRef) {
-          addMessage(`[screenshot:${imageRef}]Screenshot captured`, "assistant");
+          addMessage(`[screenshot:${imageRef}]${t("screenshotUploaded")}`, "assistant");
         }
       });
 
@@ -3350,7 +3677,7 @@ Copilot Bar is a menu bar chat app that can **chat**, **run tools**, and **show 
         // Widget is the response - clear loading state
         hideTypingIndicator();
         isLoading = false;
-        sendBtn.textContent = "Send";
+        sendBtn.textContent = t("send");
         updateSendBtn();
 
         let widget;

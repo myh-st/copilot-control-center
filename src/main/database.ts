@@ -17,6 +17,7 @@ const DEFAULT_CONFIG: Record<string, string> = {
   model: "gpt-5-mini",
   shortcut: "CommandOrControl+Shift+T",
   theme: "dark",
+  language: "system",
 };
 
 let db: SqlJsDatabase | null = null;
@@ -235,11 +236,12 @@ export function getAllConfig(): Record<string, string> {
 }
 
 // Convenience function for backward compatibility
-export function loadConfig(): { model: string; shortcut: string; theme: string } {
+export function loadConfig(): { model: string; shortcut: string; theme: string; language: string } {
   return {
     model: getConfig("model") || DEFAULT_CONFIG.model,
     shortcut: getConfig("shortcut") || DEFAULT_CONFIG.shortcut,
     theme: getConfig("theme") || DEFAULT_CONFIG.theme,
+    language: getConfig("language") || DEFAULT_CONFIG.language,
   };
 }
 

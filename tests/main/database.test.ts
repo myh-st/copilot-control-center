@@ -50,6 +50,7 @@ describe("config", () => {
     expect(config.model).toBe("gpt-5-mini");
     expect(config.shortcut).toBe("CommandOrControl+Shift+T");
     expect(config.theme).toBe("dark");
+    expect(config.language).toBe("system");
   });
 
   it("setConfig/getConfig roundtrip works", () => {
@@ -71,6 +72,7 @@ describe("config", () => {
     const all = getAllConfig();
     expect(all.model).toBe("gpt-5-mini");
     expect(all.theme).toBe("dark");
+    expect(all.language).toBe("system");
   });
 });
 

@@ -53,6 +53,11 @@ function createIcon(): Electron.NativeImage {
 // Track current shortcut for re-registration
 let currentShortcut: string | null = null;
 
+function resolveUiLanguage(language?: string): "en" | "th" {
+  if (language === "en" || language === "th") return language;
+  return app.getLocale().toLowerCase().startsWith("th") ? "th" : "en";
+}
+
 // Register global shortcut
 function registerShortcut(mb: ReturnType<typeof menubar>, shortcut: string): boolean {
   // Unregister previous shortcut if exists
@@ -137,6 +142,7 @@ app.whenReady().then(async () => {
         model: "gpt-5-mini",
         shortcut: "CommandOrControl+Shift+T",
         theme: "dark",
+        language: "system",
       };
     }
   });
@@ -221,12 +227,27 @@ app.whenReady().then(async () => {
   let quitConfirmed = false;
 
   ipcMain.handle("quit-app", async () => {
+    const config = loadConfig();
+    const language = resolveUiLanguage(config.language);
+    const copy = language === "th"
+      ? {
+        quit: "ออก",
+        cancel: "ยกเลิก",
+        title: "ออกจาก Copilot Bar",
+        message: "คุณแน่ใจหรือไม่ว่าต้องการออกจาก Copilot Bar?",
+      }
+      : {
+        quit: "Quit",
+        cancel: "Cancel",
+        title: "Quit Copilot Bar",
+        message: "Are you sure you want to quit Copilot Bar?",
+      };
     const { response } = await dialog.showMessageBox({
       type: "question",
-      buttons: ["Quit", "Cancel"],
+      buttons: [copy.quit, copy.cancel],
       defaultId: 1,
-      title: "Quit Copilot Bar",
-      message: "Are you sure you want to quit Copilot Bar?",
+      title: copy.title,
+      message: copy.message,
     });
     if (response === 0) {
       quitConfirmed = true;
